@@ -1,0 +1,8 @@
+${AnsiColor.BLUE} .______        ___       __           ___       _______   __  .__   __.
+${AnsiColor.BLUE} |   _  \      /   \     |  |         /   \     |       \ |  | |  \ |  |
+${AnsiColor.BLUE} |  |_)  |    /  ^  \    |  |        /  ^  \    |  .--.  ||  | |   \|  |
+${AnsiColor.BLUE} |   ___/    /  /_\  \   |  |       /  /_\  \   |  |  |  ||  | |  . `  |
+${AnsiColor.BLUE} |  |       /  _____  \  |  `----. /  _____  \  |  '--'  ||  | |  |\   |
+${AnsiColor.BLUE} | _|      /__/     \__\ |_______|/__/     \__\ |_______/ |__| |__| \__|
+${AnsiColor.BLUE}
+${AnsiColor.BRIGHT_BLUE}:: Let's Calculate :: Running Spring Boot ${spring-boot.version} :: ${AnsiColor.BLACK}

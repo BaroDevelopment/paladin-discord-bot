@@ -1,0 +1,27 @@
+# DEFAULT LOCAL PROPERTIES
+debug=false
+logging.level.org.springframework.web=INFO
+logging.level.com.paladin.discord.bot=DEBUG
+logging.level.root=INFO
+server.port=5555
+
+# Redis
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=paladin
+redis.message.cache.duration.minutes=60
+
+# JPA
+spring.datasource.url=jdbc:postgresql://localhost:5432/Paladin
+spring.datasource.username=paladin
+spring.datasource.password=paladin
+spring.jpa.hibernate.ddl-auto=update
+
+# Discord Bot
+token=
+activity=https://github.com/BaroDevelopment/pladin-discord-bot
+defaultPrefix=.
+shardCount=2
+ownerIds=394154377100787714, 358994293823897600
+defaultAfkMessage=I am afk atm. Please drop me a message in DM.
+serverVerificationEnabled=false

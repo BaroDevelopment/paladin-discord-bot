@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  paladin-discord:
+    image: barodev/paladin-discord-bot:0.0.1-SNAPSHOT
+    container_name: paladin-discord
+    hostname: paladin-discord
+    ports:
+      - "5555:5555"
+    volumes:
+      - ./application.properties:/opt/paladin-discord-bot/config/application.properties
+    depends_on:
+      - paladin-postgres
+      - paladin-redis
+    networks:
+      - paladin-local-network
+  paladin-postgres:
+    image: postgres:9.6.22-alpine3.14
+    hostname: paladin-postgres
+    container_name: paladin-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=paladin
+      - POSTGRES_PASSWORD=paladin
+      - POSTGRES_DB=Paladin
+    ports:
+      - "5432:5432"
+    volumes:
+      - paladin-postgres-data:/var/lib/postgresql/data
+    networks:
+      - paladin-local-network
+  paladin-redis:
+    image: redis:alpine3.12
+    container_name: paladin-redis
+    hostname: paladin-redis
+    restart: unless-stopped
+    # notice the redis password here!
+    command: redis-server --requirepass paladin
+    ports:
+      - "6379:6379"
+    volumes:
+      - paladin-redist-data:/data
+    networks:
+      - paladin-local-network
+networks:
+  paladin-local-network:
+volumes:
+  paladin-postgres-data:
+  paladin-redist-data:

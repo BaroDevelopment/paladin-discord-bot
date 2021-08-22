@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>paladin-discord-bot</artifactId>
+        <groupId>com.paladin.discord.bot</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>paladin-discord-bot-docker</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <app.home>/opt/paladin-discord-bot</app.home>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>build-docker-images</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>paladin-discord-bot-service</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.repo}/paladin-discord-bot:${project.version}</name>
+                                    <build>
+                                        <optimise>true</optimise>
+                                        <from>${docker.container.parent}</from>
+                                        <maintainer>Baro Development</maintainer>
+                                        <workdir>${app.home}</workdir>
+
+                                        <env>
+                                            <APP_HOME>${app.home}</APP_HOME>
+                                        </env>
+
+                                        <assembly>
+                                            <mode>dir</mode>
+                                            <targetDir>${app.home}</targetDir>
+                                            <descriptor>assembly.xml</descriptor>
+                                        </assembly>
+
+                                        <runCmds>
+                                            <run>apk --update add tzdata openntpd</run>
+                                            <run>cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime</run>
+                                            <run>echo "Europe/Berlin" > /etc/timezone</run>
+                                            <run>ntpd -s</run>
+                                        </runCmds>
+
+                                        <ports>
+                                            <port>5555</port>
+                                        </ports>
+
+                                        <cmd>
+                                            <exec>
+                                                <arg>java</arg>
+                                                <arg>-Xmx200m</arg>
+                                                <arg>-jar</arg>
+                                                <arg>-Dspring.config.location=${app.home}/config/</arg>
+                                                <arg>${app.home}/paladin-discord-bot.jar</arg>
+                                            </exec>
+                                        </cmd>
+
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

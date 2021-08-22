@@ -1,0 +1,5 @@
+.idea
+*.iml
+.env
+paladin-discord-bot-service/src/main/resources/application.properties
+docker/application.properties
