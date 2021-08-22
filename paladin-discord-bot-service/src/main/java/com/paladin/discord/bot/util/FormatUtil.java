@@ -99,17 +99,16 @@ public class FormatUtil {
 
     public static String getDateAndTimestamps(OffsetDateTime dateTime) {
 
-        ZoneOffset offset = dateTime.getOffset();
         int hour = dateTime.getHour();
         int minutes = dateTime.getMinute();
         int seconds = dateTime.getSecond();
-
 
         int year = dateTime.getYear();
         int month = dateTime.getMonth().getValue();
         int dayOfMonth = dateTime.getDayOfMonth();
         String dayOfWeek = dateTime.getDayOfWeek().toString();
 
-        return dayOfWeek.toLowerCase() + " - " + dayOfMonth + "." + month + "." + year + " " + "| " + String.format("%02d", hour) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + " GMT+0";
+//        return dayOfWeek.toLowerCase() + " - " + dayOfMonth + "." + month + "." + year + " " + "| " + String.format("%02d", hour) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + " GMT+0";
+        return dayOfMonth + "." + month + "." + year + " " + " " + String.format("%02d", hour) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
     }
 }

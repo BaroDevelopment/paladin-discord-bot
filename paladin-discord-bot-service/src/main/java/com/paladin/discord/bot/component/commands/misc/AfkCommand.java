@@ -103,7 +103,8 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
         if (afkMap.isEmpty()) return;
 
         EmbedBuilder eb = new EmbedBuilder().setColor(ColorUtil.getRandomHsbColor())
-                .setDescription("You mentioned afk users");
+                .setDescription("You mentioned afk users")
+                .setFooter("Times are in GMT+0");
         afkMap.forEach((s, model) -> eb.addField(s + " - afk since " + getTimeAsString(model), model.getMessage(),
                 false));
         event.getChannel().sendMessageEmbeds(eb.build()).queue();
