@@ -96,7 +96,7 @@ public class InviteCommand extends ACommand implements ICommand, ISlashCommand {
 
     @Override
     public long getCooldown() {
-        return 60;
+        return 30;
     }
 
     @Override

@@ -8,9 +8,12 @@ import com.paladin.discord.bot.component.commands.moderation.ServerBlacklistComm
 import com.paladin.discord.bot.component.commands.owner.GlobalBlacklistCommand;
 import com.paladin.discord.bot.config.BotConfig;
 import com.paladin.discord.bot.enums.CommandCategory;
+import com.paladin.discord.bot.repository.redis.RedisCooldownRepository;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -20,9 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @Component
@@ -35,13 +40,16 @@ public class CommandManager {
     private final BotConfig botConfig;
     private final ServerBlacklistCommand serverBlacklistCommand;
     private final GlobalBlacklistCommand globalBlacklistCommand;
+    private final RedisCooldownRepository redisCooldownRepository;
 
 
     public CommandManager(BotConfig botConfig, ServerBlacklistCommand serverBlacklistCommand,
-                          GlobalBlacklistCommand globalBlacklistCommand) {
+                          GlobalBlacklistCommand globalBlacklistCommand,
+                          RedisCooldownRepository redisCooldownRepository) {
         this.botConfig = botConfig;
         this.serverBlacklistCommand = serverBlacklistCommand;
         this.globalBlacklistCommand = globalBlacklistCommand;
+        this.redisCooldownRepository = redisCooldownRepository;
     }
 
     public void handle(MessageReceivedEvent event) {
@@ -109,6 +117,9 @@ public class CommandManager {
             return;
         }
 
+        // handle Cooldown
+        if (hasCooldown(cmd, event.getAuthor().getId(), event.getChannel())) return;
+
         cmd.execute(ctx);
     }
 
@@ -134,6 +145,9 @@ public class CommandManager {
             return;
         }
 
+        // handle Cooldown
+        if (hasCooldown(cmd, event.getUser().getId(), event.getChannel())) return;
+
         cmd.handleSlashCommand(event);
     }
 
@@ -143,6 +157,24 @@ public class CommandManager {
         if (cmd == null) return;
 
         cmd.handleSelectionMenu(event);
+    }
+
+    private boolean hasCooldown(ICommand cmd, String userId, MessageChannel channel) {
+        long cooldown = redisCooldownRepository.hasCooldown(cmd, userId);
+        if (cooldown <= 0) return false;
+        String msg = "You have " + (cmd.getCooldown() - cooldown) + " seconds cooldown on that command";
+        channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.RED)
+                .setDescription(msg).build()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+        return true;
+    }
+
+    private boolean hasCooldown(ISlashCommand cmd, String userId, MessageChannel channel) {
+        long cooldown = redisCooldownRepository.hasCooldown(cmd, userId);
+        if (cooldown <= 0) return false;
+        String msg = "You have " + (cmd.getCooldown() - cooldown) + " seconds cooldown on that command";
+        channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.RED)
+                .setDescription(msg).build()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+        return true;
     }
 
     private boolean hasOwnerPermissions(CommandContext ctx, ICommand cmd) {

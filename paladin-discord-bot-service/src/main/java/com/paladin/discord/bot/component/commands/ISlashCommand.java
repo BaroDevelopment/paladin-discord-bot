@@ -21,4 +21,7 @@ public interface ISlashCommand {
     }
 
     boolean validate(SlashCommandEvent event);
+
+    // in seconds
+    long getCooldown();
 }

@@ -9,7 +9,7 @@ import com.paladin.discord.bot.config.BotConfig;
 import com.paladin.discord.bot.config.EmoteConfig;
 import com.paladin.discord.bot.enums.CommandCategory;
 import com.paladin.discord.bot.model.redis.AfkRedisModel;
-import com.paladin.discord.bot.repository.redis.RedisStringRepository;
+import com.paladin.discord.bot.repository.redis.RedisAfkRepository;
 import com.paladin.discord.bot.util.ColorUtil;
 import com.paladin.discord.bot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -41,12 +41,12 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
     private static final String COMMAND_NAME = "afk";
     private final EmoteConfig emoteConfig;
     private final BotConfig botConfig;
-    private final RedisStringRepository redisStringRepository;
+    private final RedisAfkRepository redisAfkRepository;
 
-    public AfkCommand(EmoteConfig emoteConfig, BotConfig botConfig, RedisStringRepository redisStringRepository) {
+    public AfkCommand(EmoteConfig emoteConfig, BotConfig botConfig, RedisAfkRepository redisAfkRepository) {
         this.emoteConfig = emoteConfig;
         this.botConfig = botConfig;
-        this.redisStringRepository = redisStringRepository;
+        this.redisAfkRepository = redisAfkRepository;
     }
 
     public void handleAfkStateOfUser(MessageReceivedEvent event) {
@@ -62,7 +62,7 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
     private void handleAfkRemove(MessageReceivedEvent event) {
         try {
             String userId = event.getAuthor().getId();
-            AfkRedisModel redisResult = redisStringRepository.findOne("afk:" + userId).block();
+            AfkRedisModel redisResult = redisAfkRepository.findOne("afk:" + userId).block();
             if (redisResult != null) {
                 OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
                 OffsetDateTime past = OffsetDateTime.parse(redisResult.getCreationTime());
@@ -74,7 +74,7 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
                                 .build()
                 ).queue();
             }
-            redisStringRepository.delete("afk:" + userId).subscribe();
+            redisAfkRepository.delete("afk:" + userId).subscribe();
         } catch (Exception e) {
             LOGGER.error("Failed to find user in Redis", e);
         }
@@ -91,7 +91,7 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
 
         users.forEach(user -> {
             try {
-                AfkRedisModel redisResult = redisStringRepository.findOne("afk:" + user.getId()).block();
+                AfkRedisModel redisResult = redisAfkRepository.findOne("afk:" + user.getId()).block();
                 if (redisResult != null) {
                     afkMap.put(user.getName(), redisResult);
                 }
@@ -128,8 +128,7 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
         ).queue();
         AfkRedisModel model = new AfkRedisModel(ctx.getEvent().getAuthor().getId(), afkMessage,
                 ctx.getEvent().getMessage().getTimeCreated().toString());
-        redisStringRepository.save(COMMAND_NAME + ":" + ctx.getEvent().getAuthor().getId(), model,
-                botConfig.getRedisCacheDurationMinutes());
+        redisAfkRepository.save(COMMAND_NAME + ":" + ctx.getEvent().getAuthor().getId(), model);
     }
 
     @Override
@@ -141,8 +140,7 @@ public class AfkCommand extends ACommand implements ICommand, ISlashCommand {
         LOGGER.debug("User {} went afk with message: {}", event.getUser().getAsTag(), afkMessage);
         event.replyEmbeds(getSuccessMessage(afkMessage).build()).queue();
         AfkRedisModel model = new AfkRedisModel(event.getUser().getId(), afkMessage, event.getTimeCreated().toString());
-        redisStringRepository.save(COMMAND_NAME + ":" + event.getUser().getId(), model,
-                botConfig.getRedisCacheDurationMinutes());
+        redisAfkRepository.save(COMMAND_NAME + ":" + event.getUser().getId(), model);
     }
 
     @Override
