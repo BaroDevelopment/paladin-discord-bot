@@ -5,6 +5,7 @@ import com.paladin.discord.bot.component.commands.ICommand;
 import com.paladin.discord.bot.component.commands.ISelectionMenuCommand;
 import com.paladin.discord.bot.component.commands.ISlashCommand;
 import com.paladin.discord.bot.component.commands.moderation.ServerBlacklistCommand;
+import com.paladin.discord.bot.component.commands.owner.GlobalBlacklistCommand;
 import com.paladin.discord.bot.config.BotConfig;
 import com.paladin.discord.bot.enums.CommandCategory;
 import net.dv8tion.jda.api.Permission;
@@ -33,11 +34,14 @@ public class CommandManager {
     public static final Map<String, ISelectionMenuCommand> SELECTION_MENU_COMMANDS = new HashMap<>();
     private final BotConfig botConfig;
     private final ServerBlacklistCommand serverBlacklistCommand;
+    private final GlobalBlacklistCommand globalBlacklistCommand;
 
 
-    public CommandManager(BotConfig botConfig, ServerBlacklistCommand serverBlacklistCommand) {
+    public CommandManager(BotConfig botConfig, ServerBlacklistCommand serverBlacklistCommand,
+                          GlobalBlacklistCommand globalBlacklistCommand) {
         this.botConfig = botConfig;
         this.serverBlacklistCommand = serverBlacklistCommand;
+        this.globalBlacklistCommand = globalBlacklistCommand;
     }
 
     public void handle(MessageReceivedEvent event) {
@@ -82,7 +86,8 @@ public class CommandManager {
         }
 
         if (!hasOwnerPermissions(ctx, cmd)) {
-            LOGGER.debug("User {} tried to execute owner command {} {}", event.getAuthor().getAsTag(), invoke, ctx.getArgs());
+            LOGGER.debug("User {} tried to execute owner command {} {}", event.getAuthor().getAsTag(), invoke,
+                    ctx.getArgs());
             return;
         }
 
@@ -98,6 +103,12 @@ public class CommandManager {
             return;
         }
 
+        // handle global blacklist
+        if (globalBlacklistCommand.isBlacklisted(event.getAuthor().getId())) {
+            LOGGER.debug("Ignoring globally blacklisted user with ID {}", event.getAuthor().getId());
+            return;
+        }
+
         cmd.execute(ctx);
     }
 
@@ -110,9 +121,16 @@ public class CommandManager {
         if (!cmd.validate(event)) return;
 
         // handle server blacklist
-        if (event.getGuild() != null && serverBlacklistCommand.isBlacklisted(event.getGuild().getId(), event.getUser().getId())) {
+        if (event.getGuild() != null && serverBlacklistCommand.isBlacklisted(event.getGuild().getId(),
+                event.getUser().getId())) {
             LOGGER.debug("Ignoring blacklisted user with ID {} in guild with ID {}",
                     event.getGuild().getId(), event.getUser().getId());
+            return;
+        }
+
+        // handle server blacklist
+        if (event.getGuild() != null && globalBlacklistCommand.isBlacklisted(event.getUser().getId())) {
+            LOGGER.debug("Ignoring globally blacklisted user with ID {}", event.getUser().getId());
             return;
         }
 

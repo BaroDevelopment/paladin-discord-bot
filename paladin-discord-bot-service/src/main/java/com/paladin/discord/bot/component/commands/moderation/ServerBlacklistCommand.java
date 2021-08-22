@@ -86,6 +86,7 @@ public class ServerBlacklistCommand extends ACommand implements ICommand, ISlash
         if (blacklist) {
             blacklist(Objects.requireNonNull(event.getGuild()).getId(), user.getId());
             event.replyEmbeds(sendSuccess("Blacklisted " + user.getAsMention()).build())
+                    .setEphemeral(true)
                     .queue();
         } else {
             unblacklist(Objects.requireNonNull(event.getGuild()).getId(), user.getId());
