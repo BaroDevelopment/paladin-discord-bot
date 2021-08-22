@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity(name = "ServerBlacklistCommandEntity")
-@Table(name = "Server_Blacklist_Commands")
+@Table(name = "Server_Blacklist_User")
 public class ServerBlacklistCommandEntity {
 
     @EmbeddedId
