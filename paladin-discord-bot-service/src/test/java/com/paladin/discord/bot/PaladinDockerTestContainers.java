@@ -21,7 +21,7 @@ abstract class PaladinDockerTestContainers {
                 .withDatabaseName("Paladin");
 //                .withReuse(true);
 
-        static GenericContainer<?> redis = new GenericContainer<>("redis:3-alpine")
+        static GenericContainer<?> redis = new GenericContainer<>("redis:alpine3.12")
                 .withExposedPorts(6379);
 //                .withReuse(true);
 
