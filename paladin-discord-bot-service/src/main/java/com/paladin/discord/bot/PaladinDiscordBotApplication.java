@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PaladinDiscordBotApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PaladinDiscordBotApplication.class, args);
+        createSpringApplication().run(args);
+    }
+
+    public static SpringApplication createSpringApplication() {
+        return new SpringApplication(PaladinDiscordBotApplication.class);
     }
 }
