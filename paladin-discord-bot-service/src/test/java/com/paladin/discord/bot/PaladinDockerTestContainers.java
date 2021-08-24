@@ -18,12 +18,12 @@ abstract class PaladinDockerTestContainers {
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
         static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:9.6.22-alpine3.14")
-                .withDatabaseName("Paladin");
-//                .withReuse(true);
+                .withDatabaseName("Paladin")
+                .withReuse(true);
 
         static GenericContainer<?> redis = new GenericContainer<>("redis:alpine3.12")
-                .withExposedPorts(6379);
-//                .withReuse(true);
+                .withExposedPorts(6379)
+                .withReuse(true);
 
         public static Map<String, String> getProperties() {
             Startables.deepStart(Stream.of(redis, postgres)).join();
