@@ -2,6 +2,7 @@ package com.paladin.discord.bot;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.GenericContainer;
@@ -39,7 +40,7 @@ abstract class PaladinDockerTestContainers {
 
         @Override
         public void initialize(ConfigurableApplicationContext context) {
-            var env = context.getEnvironment();
+            ConfigurableEnvironment env = context.getEnvironment();
             env.getPropertySources().addFirst(new MapPropertySource(
                     "testcontainers",
                     (Map) getProperties()
