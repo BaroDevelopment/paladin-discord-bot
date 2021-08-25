@@ -1,13 +1,15 @@
 package com.paladin.discord.bot.component;
 
+import com.paladin.discord.bot.component.commands.admin.StickyRoleCommand;
 import com.paladin.discord.bot.component.commands.misc.AfkCommand;
-import com.paladin.discord.bot.component.commands.moderation.ServerBlacklistCommand;
 import com.paladin.discord.bot.component.commands.owner.VerifyServerCommand;
 import com.paladin.discord.bot.config.BotConfig;
 import com.paladin.discord.bot.util.LogUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -28,15 +30,18 @@ public class PaladinEventListener extends ListenerAdapter {
     private final CommandManager manager;
     private final AfkCommand afkCommand;
     private final VerifyServerCommand verifyServerCommand;
+    private final StickyRoleCommand stickyRoleCommand;
 
     public PaladinEventListener(BotConfig botConfig,
                                 CommandManager manager,
                                 AfkCommand afkCommand,
-                                VerifyServerCommand verifyServerCommand) {
+                                VerifyServerCommand verifyServerCommand,
+                                StickyRoleCommand stickyRoleCommand) {
         this.botConfig = botConfig;
         this.manager = manager;
         this.afkCommand = afkCommand;
         this.verifyServerCommand = verifyServerCommand;
+        this.stickyRoleCommand = stickyRoleCommand;
     }
 
     // Getting fired for every shard that starts/ is ready
@@ -91,5 +96,17 @@ public class PaladinEventListener extends ListenerAdapter {
     // Discord triggers this event on server errors too!
     public void onGuildJoin(@Nonnull GuildJoinEvent event) {
         verifyServerCommand.leaveGuildIfNotVerified(event.getGuild());
+    }
+
+    @Override
+    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event) {
+        // handle sticky roles
+        stickyRoleCommand.handleUserLeave(event.getGuild().getId(), event.getMember(), event.getUser().getId());
+    }
+
+    @Override
+    public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
+        //  handle sticky roles
+        stickyRoleCommand.handleUserJoin(event.getGuild().getId(), event.getUser().getId(), event.getGuild());
     }
 }
