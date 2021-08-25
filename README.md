@@ -9,14 +9,14 @@ To make use of reusable testcontainers copy the `docker/.testcontainers.properti
 
 ### Credentials
 #### Postgres
-| Host | Port                             | Databasename | User | Password |
-|------|----------------------------------|--------------|------|----------|
-| test | check your docker container port | Paladin      | test | test     |
+| Host      | Port                             | Databasename | User | Password |
+|-----------|----------------------------------|--------------|------|----------|
+| localhost | check your docker container port | Paladin      | test | test     |
 
 #### Redis
-| Host | Port                             | Password          |
-|------|----------------------------------|-------------------|
-| test | check your docker container port | without password! |
+| Host      | Port                             | Password          |
+|-----------|----------------------------------|-------------------|
+| localhost | check your docker container port | without password! |
 
 ## Using docker-compose
 Copy the application.properties.sample from the resources to `docker/application.properties`. \
