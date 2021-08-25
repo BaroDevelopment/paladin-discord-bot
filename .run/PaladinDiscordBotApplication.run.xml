@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PaladinDiscordBotApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="paladin-discord-bot-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.paladin.discord.bot.PaladinDiscordBotApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
