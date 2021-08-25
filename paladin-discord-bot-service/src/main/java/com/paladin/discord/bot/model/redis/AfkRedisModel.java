@@ -1,6 +1,5 @@
 package com.paladin.discord.bot.model.redis;
 
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
 public class AfkRedisModel {
