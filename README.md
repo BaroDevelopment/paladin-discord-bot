@@ -22,3 +22,8 @@ To make use of reusable testcontainers copy the `docker/.testcontainers.properti
 Copy the application.properties.sample from the resources to `docker/application.properties`. \
 Start postgres and redis `docker-compose up paladin-redis paladin-redis`
 Finally run your Application with `PaladinDiscordBotApplication`
+
+## Third Party Dependencies
+- [Testcontainers](https://www.testcontainers.org/)
+- [Java Discord API - JDA](https://github.com/DV8FromTheWorld/JDA)
+- [Docker Maven Plugin](https://github.com/fabric8io/docker-maven-plugin)
