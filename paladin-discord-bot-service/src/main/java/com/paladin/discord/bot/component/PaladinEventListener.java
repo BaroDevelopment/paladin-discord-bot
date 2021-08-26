@@ -2,6 +2,7 @@ package com.paladin.discord.bot.component;
 
 import com.paladin.discord.bot.component.commands.admin.StickyRoleCommand;
 import com.paladin.discord.bot.component.commands.misc.AfkCommand;
+import com.paladin.discord.bot.component.commands.owner.GlobalBanCommand;
 import com.paladin.discord.bot.component.commands.owner.VerifyServerCommand;
 import com.paladin.discord.bot.config.BotConfig;
 import com.paladin.discord.bot.util.LogUtils;
@@ -31,17 +32,19 @@ public class PaladinEventListener extends ListenerAdapter {
     private final AfkCommand afkCommand;
     private final VerifyServerCommand verifyServerCommand;
     private final StickyRoleCommand stickyRoleCommand;
+    private final GlobalBanCommand globalBanCommand;
 
     public PaladinEventListener(BotConfig botConfig,
                                 CommandManager manager,
                                 AfkCommand afkCommand,
                                 VerifyServerCommand verifyServerCommand,
-                                StickyRoleCommand stickyRoleCommand) {
+                                StickyRoleCommand stickyRoleCommand, GlobalBanCommand globalBanCommand) {
         this.botConfig = botConfig;
         this.manager = manager;
         this.afkCommand = afkCommand;
         this.verifyServerCommand = verifyServerCommand;
         this.stickyRoleCommand = stickyRoleCommand;
+        this.globalBanCommand = globalBanCommand;
     }
 
     // Getting fired for every shard that starts/ is ready
@@ -108,5 +111,7 @@ public class PaladinEventListener extends ListenerAdapter {
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
         //  handle sticky roles
         stickyRoleCommand.handleUserJoin(event.getGuild().getId(), event.getUser().getId(), event.getGuild());
+        // handle Global Ban Command
+        globalBanCommand.handleGlobalBanOnGuildJoin(event.getUser().getId(), event.getGuild());
     }
 }
