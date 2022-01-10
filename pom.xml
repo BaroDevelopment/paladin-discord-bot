@@ -39,7 +39,7 @@
         <maven.plugin.spring.boot>2.5.3</maven.plugin.spring.boot>
         <!-- Third party -->
         <postgres.version>42.3.1</postgres.version>
-        <gson.version>2.8.8</gson.version>
+        <gson.version>2.8.9</gson.version>
         <jcommander.version>1.81</jcommander.version>
         <!-- DISCORD-->
         <jda.version>4.3.0_305</jda.version>
