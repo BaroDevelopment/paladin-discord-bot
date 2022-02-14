@@ -40,7 +40,7 @@
         <!-- Third party -->
         <postgres.version>42.3.2</postgres.version>
         <gson.version>2.8.9</gson.version>
-        <jcommander.version>1.81</jcommander.version>
+        <jcommander.version>1.82</jcommander.version>
         <!-- DISCORD-->
         <jda.version>4.3.0_305</jda.version>
         <lavaplayer.version>1.3.78</lavaplayer.version>
