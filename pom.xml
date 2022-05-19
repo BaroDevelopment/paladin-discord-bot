@@ -31,7 +31,7 @@
         <docker.container.parent>adoptopenjdk/openjdk11:jdk-11.0.4_11-alpine</docker.container.parent>
         <!-- Spring -->
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
-        <spring.boot.version>2.6.7</spring.boot.version>
+        <spring.boot.version>2.6.8</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
         <!-- Plugins -->
         <maven.plugin.compiler.version>3.7.0</maven.plugin.compiler.version>
