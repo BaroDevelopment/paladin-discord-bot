@@ -32,7 +32,7 @@
         <!-- Spring -->
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <spring.boot.version>2.6.7</spring.boot.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <!-- Plugins -->
         <maven.plugin.compiler.version>3.7.0</maven.plugin.compiler.version>
         <maven.plugin.docker.version>0.31.0</maven.plugin.docker.version>
